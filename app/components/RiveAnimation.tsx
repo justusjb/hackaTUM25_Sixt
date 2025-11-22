@@ -1,6 +1,6 @@
 'use client';
 
-import { useRive, EventType } from '@rive-app/react-canvas';
+import { useRive, Fit, Alignment, Layout } from '@rive-app/react-canvas';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +13,10 @@ export default function RiveAnimation() {
         src: '/animations/9863-18814-fortune-wheel-mini-game.riv',
         stateMachines: "Fortune Wheel",
         autoplay: true,
+        layout: new Layout({
+            fit: Fit.Cover, // Makes it cover the entire space
+            alignment: Alignment.Center,
+        }),
     });
 
     useEffect(() => {
