@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import StripeProvider from './components/StripeProvider';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,10 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+    <head>
+        <link rel="manifest" href="/manifest.json" />
+    </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+      <StripeProvider>
+          {children}
+      </StripeProvider>
       </body>
     </html>
   );
