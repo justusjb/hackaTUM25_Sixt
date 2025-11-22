@@ -10,7 +10,8 @@ export default function RiveAnimation() {
     const hasRedirected = useRef(false);
 
     const { rive, RiveComponent } = useRive({
-        src: '/animations/9863-18814-fortune-wheel-mini-game.riv',
+        //src: '/animations/9863-18814-fortune-wheel-mini-game.riv',
+        src: '/animations/fortune_wheel-mini_game6.riv',
         stateMachines: "Fortune Wheel",
         autoplay: true,
         layout: new Layout({
