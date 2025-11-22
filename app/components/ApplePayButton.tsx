@@ -13,11 +13,11 @@ export default function ApplePayButton() {
         if (!stripe) return;
 
         const pr = stripe.paymentRequest({
-            country: 'US',
-            currency: 'usd',
+            country: 'DE',
+            currency: 'eur',
             total: {
                 label: 'Test Purchase',
-                amount: 1099, // $10.99 in cents
+                amount: 500, // $10.99 in cents
             },
             requestPayerName: true,
             requestPayerEmail: true,
@@ -72,7 +72,7 @@ export default function ApplePayButton() {
                 Pay with Apple Pay
             </button>
             {message && (
-                <div className="text-center text-lg font-medium">{message}</div>
+                <div className="text-center text-lg font-medium text-black">{message}</div>
             )}
         </div>
     );

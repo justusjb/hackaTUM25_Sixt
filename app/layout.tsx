@@ -28,9 +28,7 @@ export default function RootLayout({
     <head>
         <link rel="manifest" href="/manifest.json" />
     </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
       <StripeProvider>
           {children}
       </StripeProvider>
