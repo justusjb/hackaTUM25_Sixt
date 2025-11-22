@@ -3,10 +3,13 @@
 import { useStripe } from '@stripe/react-stripe-js';
 import { PaymentRequest } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
-import RiveAnimation from './RiveAnimation'; // Import your Rive component
+import RiveAnimation from './RiveAnimation';
+import { useRouter } from 'next/navigation';
+
 
 export default function ApplePayButton() {
     const stripe = useStripe();
+    const router = useRouter();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
     const [message, setMessage] = useState('');
     const [paymentSuccess, setPaymentSuccess] = useState(false); // Add this state
@@ -53,8 +56,9 @@ export default function ApplePayButton() {
                 setMessage(`Payment failed: ${error.message}`);
             } else {
                 ev.complete('success');
-                setPaymentSuccess(true); // Set success state
-                setMessage('✅ Payment successful!');
+                // setPaymentSuccess(true); // Set success state
+                // setMessage('✅ Payment successful!');
+                router.push('/gambling')
             }
         });
     }, [stripe]);

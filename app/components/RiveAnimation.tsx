@@ -1,21 +1,28 @@
 'use client';
 
 import { useRive } from '@rive-app/react-canvas';
+import { useEffect } from 'react';
 
 export default function RiveAnimation() {
-    const { RiveComponent } = useRive({
+    const { rive, RiveComponent } = useRive({
         src: '/animations/9863-18814-fortune-wheel-mini-game.riv',
-        autoplay: false,
+        stateMachines: "Fortune Wheel",
+        autoplay: true,
     });
 
+    useEffect(() => {
+        if (rive) {
+            console.log('Available animations:', rive.animationNames);
+            console.log('Available state machines:', rive.stateMachineNames);
+        }
+    }, [rive]);
+
     return (
-        <div className="w-full h-full flex items-center justify-center">
             <RiveComponent
                 style={{
-                    width: '400px',
-                    height: '400px'
+                    width: '100%',
+                    height: '100%'
                 }}
             />
-        </div>
     );
 }
