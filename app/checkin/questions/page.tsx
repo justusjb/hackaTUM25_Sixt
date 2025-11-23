@@ -5,42 +5,66 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const questions = [
-   { id: 1, key: 'gear', question: 'All 3 of you bringing ski gear?', image: '/ski-gear.jpg' },
-   { id: 2, key: 'alpine', question: 'Taking the high alpine passes?', image: '/alpine-pass.jpg' },
-   { id: 3, key: 'snow', question: 'Expecting snow on the roads?', image: '/snow-on-the-road.jpg' },
-];
+type QuestionNode = {
+    id: number;
+    key: string;
+    question: string;
+    image: string;
+    yes?: string | null;
+    no?: string | null;
+};
+
+const decisionTree: Record<string, QuestionNode> = {
+    'snow': { id: 1, key: 'snow', question: 'Expecting snow on the roads?', image: '/snow-on-the-road.jpg', yes: 'alpine', no: 'alpine' },
+    'alpine': { id: 2, key: 'alpine', question: 'Taking the high alpine passes?', image: '/alpine-pass.jpg', yes: 'gear', no: 'gear' },
+    'gear': { id: 3, key: 'gear', question: 'All 3 of you bringing ski gear?', image: '/ski-gear.jpg', yes: null, no: null },
+};
+
+const buildStack = (currentKey: string): QuestionNode[] => {
+    const stack: QuestionNode[] = [];
+    let key: string | null | undefined = currentKey;
+    while (key && stack.length < 3) {
+        stack.push(decisionTree[key]);
+        key = decisionTree[key].yes; // Preview "yes" path
+    }
+    return stack.reverse();
+};
 
 export default function Questions() {
    const router = useRouter();
-   const [cards, setCards] = useState(questions);
+    const [currentQuestionKey, setCurrentQuestionKey] = useState('snow');
+    const [cards, setCards] = useState(() => buildStack('snow'));
    const [answers, setAnswers] = useState<Record<string, boolean>>({});
    const [exitX, setExitX] = useState(0);
    const [isAnimating, setIsAnimating] = useState(false);
 
-   const handleAnswer = (isYes: boolean) => {
-      if (isAnimating || cards.length === 0) return;
+    const handleAnswer = (isYes: boolean) => {
+        if (isAnimating || cards.length === 0) return;
 
-      const currentCard = cards[cards.length - 1];
-      const newAnswers = { ...answers, [currentCard.key]: isYes };
-      setAnswers(newAnswers);
+        const currentCard = cards[cards.length - 1];
+        const newAnswers = { ...answers, [currentCard.key]: isYes };
+        setAnswers(newAnswers);
 
-      setIsAnimating(true);
-      setExitX(isYes ? 300 : -300);
+        setIsAnimating(true);
+        setExitX(isYes ? 300 : -300);
 
-      setTimeout(() => {
-         if (cards.length <= 1) {
-            const params = new URLSearchParams({
-               refined: 'true',
-               gear: String(newAnswers.gear ?? true),
-            });
-            router.push(`/checkin?${params.toString()}`);
-         } else {
-            setCards((prev) => prev.slice(0, -1));
-         }
-         setIsAnimating(false);
-      }, 200);
-   };
+        setTimeout(() => {
+            const currentNode = decisionTree[currentCard.key];
+            const nextKey = isYes ? currentNode.yes : currentNode.no;
+
+            if (!nextKey) {
+                const params = new URLSearchParams({
+                    refined: 'true',
+                    ...Object.entries(newAnswers).reduce((acc, [key, val]) => ({ ...acc, [key]: String(val) }), {}),
+                });
+                router.push(`/checkin?${params.toString()}`);
+            } else {
+                setCurrentQuestionKey(nextKey);
+                setCards(buildStack(nextKey));
+            }
+            setIsAnimating(false);
+        }, 200);
+    };
 
    return (
       <motion.div
@@ -135,6 +159,19 @@ export default function Questions() {
                Yes
             </button>
          </div>
+          {/* Preload all images */}
+          <div className='hidden'>
+              {Object.values(decisionTree).map((q) => (
+                  <Image
+                      key={q.id}
+                      src={q.image}
+                      alt=''
+                      width={400}
+                      height={400}
+                      priority
+                  />
+              ))}
+          </div>
       </motion.div>
    );
 }
