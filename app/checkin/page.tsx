@@ -2,10 +2,10 @@
 
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 
-export default function CheckInOffer() {
+function CheckInOfferContent() {
    const router = useRouter();
    const searchParams = useSearchParams();
    const isRefined = searchParams.get('refined') === 'true';
@@ -348,5 +348,13 @@ export default function CheckInOffer() {
             )}
          </motion.div>
       </div>
+   );
+}
+
+export default function CheckInOffer() {
+   return (
+      <Suspense fallback={<div className="px-4 py-4">Loading...</div>}>
+         <CheckInOfferContent />
+      </Suspense>
    );
 }
