@@ -106,7 +106,8 @@ export default function Home() {
 
          {/* Fixed Button - Not animated with y */}
          <motion.div
-            className='fixed bottom-16 left-0 right-0 p-4'
+            className='fixed left-0 right-0 p-4'
+            style={{ bottom: 'calc(64px + env(safe-area-inset-bottom))' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}

@@ -44,7 +44,8 @@ export default function Questions() {
 
    return (
       <motion.div
-         className='px-4 py-6 pb-4 flex flex-col gap-4 h-[calc(100vh-128px)]'
+         className='px-4 py-4 flex flex-col gap-4'
+         style={{ minHeight: 'calc(100dvh - 80px - 64px - env(safe-area-inset-bottom))' }}
          initial={{ opacity: 0, y: 10 }}
          animate={{ opacity: 1, y: 0 }}
          transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -93,6 +94,7 @@ export default function Questions() {
                            type: 'spring',
                            stiffness: 300,
                            damping: 30,
+                           restDelta: 0.5,
                         }}
                      >
                         <div className='flex flex-col h-full'>

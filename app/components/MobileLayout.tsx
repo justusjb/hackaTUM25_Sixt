@@ -15,7 +15,7 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-[#1A1A1A]">
       <Header />
-      <main className="pt-14 pb-16 min-h-screen">
+      <main className="pt-20 min-h-screen" style={{ paddingBottom: 'calc(64px + env(safe-area-inset-bottom))' }}>
         {children}
       </main>
       <BottomNav />

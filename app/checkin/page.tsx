@@ -44,7 +44,7 @@ export default function CheckInOffer() {
    const hasSelection = carSelected || (isRefined && protectionSelected);
 
    return (
-      <div className='px-4 py-6 pb-4 flex flex-col gap-4 overflow-y-auto'>
+      <div className='px-4 py-4 flex flex-col gap-3' style={{ minHeight: 'calc(100dvh - 80px - 64px - env(safe-area-inset-bottom))' }}>
          <motion.h1
             className='text-[#FF5000] text-xl font-bold'
             initial={{ opacity: 0 }}
@@ -56,7 +56,7 @@ export default function CheckInOffer() {
 
          {/* Agent Message */}
          <motion.div
-            className='bg-[#2B2D3380] rounded-2xl p-3 flex items-start gap-3'
+            className='bg-[#2B2D3380] rounded-2xl p-3 flex items-start gap-3 will-change-transform'
             animate={{
                opacity: 1,
                y: showContent ? 0 : 200,
@@ -81,7 +81,7 @@ export default function CheckInOffer() {
 
          {/* Car Upgrade Card - Selectable */}
          <motion.div
-            className={`rounded-2xl overflow-hidden flex flex-col cursor-pointer transition-all ${
+            className={`rounded-2xl overflow-hidden flex flex-col cursor-pointer will-change-[transform,opacity] ${
                carSelected
                   ? 'bg-[#2B2D3380] ring-2 ring-[#FF5000]'
                   : 'bg-[#2B2D3380] opacity-60'
@@ -175,7 +175,7 @@ export default function CheckInOffer() {
          {/* Protection Card - Only in refined view, Selectable */}
          {isRefined && (
             <motion.div
-               className={`rounded-2xl p-4 flex flex-col gap-3 cursor-pointer transition-all ${
+               className={`rounded-2xl p-4 flex flex-col gap-3 cursor-pointer will-change-[transform,opacity] ${
                   protectionSelected
                      ? 'bg-[#2B2D3380] ring-2 ring-[#FF5000]'
                      : 'bg-[#2B2D3380] opacity-60'

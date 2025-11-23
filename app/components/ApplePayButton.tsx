@@ -3,16 +3,13 @@
 import { useStripe } from '@stripe/react-stripe-js';
 import { PaymentRequest } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
-import RiveAnimation from './RiveAnimation';
 import { useRouter } from 'next/navigation';
-
 
 export default function ApplePayButton() {
     const stripe = useStripe();
     const router = useRouter();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
     const [message, setMessage] = useState('');
-    const [paymentSuccess, setPaymentSuccess] = useState(false); // Add this state
 
     useEffect(() => {
         if (!stripe) return;
@@ -21,7 +18,7 @@ export default function ApplePayButton() {
             country: 'DE',
             currency: 'eur',
             total: {
-                label: 'Test Purchase',
+                label: 'SIXT Spin the Wheel',
                 amount: 500,
             },
             requestPayerName: true,
@@ -63,33 +60,26 @@ export default function ApplePayButton() {
         });
     }, [stripe]);
 
-    // Show animation after successful payment
-    if (paymentSuccess) {
+    if (!paymentRequest) {
         return (
-            <div className="flex flex-col items-center gap-4 p-8">
-                <RiveAnimation />
-                <div className="text-center text-lg font-medium text-green-600">
-                    {message}
-                </div>
-            </div>
+            <button
+                disabled
+                className="w-full bg-[#3A3A3A] text-[#9DA3AF] font-semibold py-4 rounded-2xl"
+            >
+                Apple Pay not available
+            </button>
         );
     }
 
-    if (!paymentRequest) {
-        return <div>Apple Pay not available on this device</div>;
-    }
-
     return (
-        <div className="flex flex-col items-center gap-4 p-8">
-            <button
-                onClick={() => paymentRequest.show()}
-                className="bg-black text-white px-8 py-4 rounded-lg text-lg font-semibold"
-            >
-                Pay with Apple Pay
-            </button>
-            {message && (
-                <div className="text-center text-lg font-medium text-black">{message}</div>
-            )}
-        </div>
+        <button
+            onClick={() => paymentRequest.show()}
+            className="w-full bg-[#FF5000] text-white font-semibold py-4 rounded-2xl active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+        >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+            </svg>
+            Pay €5 with Apple Pay
+        </button>
     );
 }

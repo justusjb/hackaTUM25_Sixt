@@ -45,7 +45,7 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-[#1A1A1A] flex items-center justify-around z-50 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] flex items-center justify-around z-50 pt-3" style={{ paddingBottom: 'env(safe-area-inset-bottom)', minHeight: '64px' }}>
       {navItems.map((item, index) => {
         const isActive = index === 0;
         return (

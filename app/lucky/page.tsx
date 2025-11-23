@@ -10,7 +10,8 @@ export default function Lucky() {
 
    return (
       <motion.div
-         className='px-4 py-6 flex flex-col gap-4 h-[calc(100vh-128px)]'
+         className='px-4 py-4 flex flex-col gap-4'
+         style={{ minHeight: 'calc(100dvh - 80px - 64px - env(safe-area-inset-bottom))' }}
          initial={{ opacity: 0, y: 10 }}
          animate={{ opacity: 1, y: 0 }}
          transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -28,14 +29,14 @@ export default function Lucky() {
                />
             </div>
             <span className='text-white text-sm leading-relaxed'>
-               I get it – upgrades aren't cheap. Pay €5 to spin the wheel and win up to 50% off your upgrade!
+               Here's the deal: pay 20% of the upgrade price and get a 20% chance to win the full upgrade for free. Risk €5, potentially save €24/day!
             </span>
          </div>
 
-         <div className='flex-1 flex items-center justify-center'>
+         <div className='flex-1 flex items-center justify-center min-h-0'>
             <div className='text-center'>
-               <div className='text-6xl mb-4'>🎰</div>
-               <p className='text-[#9DA3AF] text-sm'>Spin for a chance to save big</p>
+               <div className='text-5xl mb-3'>🎰</div>
+               <p className='text-[#9DA3AF] text-sm'>Pay €5 · 20% chance to win</p>
             </div>
          </div>
 
