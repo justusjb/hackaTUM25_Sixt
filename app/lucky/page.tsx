@@ -9,8 +9,9 @@ import ApplePayButton from '../components/ApplePayButton';
 function LuckyContent() {
    const router = useRouter();
    const searchParams = useSearchParams();
-   const upgradePrice = parseInt(searchParams.get('upgrade') || '24');
-   const spinPrice = Math.round(upgradePrice * 0.2);
+   const upgradePricePerDay = parseInt(searchParams.get('upgrade') || '24');
+   const totalUpgradePrice = upgradePricePerDay * 3;
+   const spinPrice = Math.round(totalUpgradePrice * 0.2);
 
    return (
       <motion.div
@@ -33,7 +34,7 @@ function LuckyContent() {
                />
             </div>
             <span className='text-white text-sm leading-relaxed'>
-               Here's the deal: pay 20% of the upgrade price and get a 20% chance to win the full upgrade for free. Risk ${spinPrice}, potentially save ${upgradePrice}/day!
+               Here's the deal: pay 20% of the upgrade price and get a 20% chance to win the full upgrade for free. Risk ${spinPrice}, potentially save ${totalUpgradePrice} total!
             </span>
          </div>
 
@@ -45,7 +46,7 @@ function LuckyContent() {
          </div>
 
          <div className='flex flex-col gap-3 shrink-0'>
-            <ApplePayButton amount={spinPrice} upgradePrice={upgradePrice} />
+            <ApplePayButton amount={spinPrice} upgradePrice={upgradePricePerDay} />
             <button
                onClick={() => router.push('/home')}
                className='w-full bg-[#2B2D33] text-white font-semibold py-4 rounded-2xl active:scale-[0.98] transition-transform'
