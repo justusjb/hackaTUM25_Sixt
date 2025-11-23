@@ -16,10 +16,56 @@ export default function CheckInOffer() {
    const [showContent, setShowContent] = useState(hasDiscount);
    const [carSelected, setCarSelected] = useState(true);
    const [protectionSelected, setProtectionSelected] = useState(true);
+   const [protectionData, setProtectionData] = useState<{
+      name: string;
+      price: number;
+      discountPercentage: number;
+   } | null>(null);
 
    useEffect(() => {
       const timer = setTimeout(() => setShowContent(true), 2200);
       return () => clearTimeout(timer);
+   }, []);
+
+   // Fetch booking data from API
+   useEffect(() => {
+      const fetchBookingData = async () => {
+         try {
+            // Create booking
+            const bookingRes = await fetch('https://hackatum25.sixt.io/api/booking', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+            });
+            const booking = await bookingRes.json();
+            console.log('Booking created:', booking);
+
+            // Fetch protections for this booking
+            if (booking.id) {
+               const protectionsRes = await fetch(
+                  `https://hackatum25.sixt.io/api/booking/${booking.id}/protections`
+               );
+               const protections = await protectionsRes.json();
+               console.log('Protections fetched:', protections);
+
+               // Get the best protection package (highest rating)
+               const bestProtection = protections.protectionPackages?.find(
+                  (p: any) => p.ratingStars === 3
+               ) || protections.protectionPackages?.[0];
+
+               if (bestProtection) {
+                  setProtectionData({
+                     name: bestProtection.name,
+                     price: Math.round(bestProtection.price.displayPrice.amount),
+                     discountPercentage: bestProtection.price.discountPercentage,
+                  });
+               }
+            }
+         } catch (error) {
+            console.log('API fetch (demo):', error);
+         }
+      };
+
+      fetchBookingData();
    }, []);
 
    // Messages adapt based on context
@@ -36,7 +82,7 @@ export default function CheckInOffer() {
 
    const baseCarPrice = isRefined ? 24 : 12;
    const carPrice = hasDiscount ? Math.round(baseCarPrice * (1 - discount / 100)) : baseCarPrice;
-   const protectionPrice = 15;
+   const protectionPrice = protectionData?.price || 69;
 
    const totalPrice =
       (carSelected ? carPrice : 0) +
@@ -191,14 +237,16 @@ export default function CheckInOffer() {
                {/* Header */}
                <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
-                     <h3 className='text-white font-bold'>All Inclusive</h3>
-                     <span className='bg-[#FF5000] text-white text-xs px-2 py-0.5 rounded-full'>
-                        -30%
-                     </span>
+                     <h3 className='text-white font-bold'>{protectionData?.name || 'Peace of Mind'}</h3>
+                     {(protectionData?.discountPercentage || 0) > 0 && (
+                        <span className='bg-[#FF5000] text-white text-xs px-2 py-0.5 rounded-full'>
+                           -{protectionData?.discountPercentage}%
+                        </span>
+                     )}
                   </div>
                   <div className='flex items-center gap-3'>
                      <span className='text-[#FF5000] font-bold'>
-                        +€{protectionPrice}/day
+                        +${protectionData?.price || 69}/day
                      </span>
                      <div
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
