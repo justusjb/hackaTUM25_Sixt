@@ -15,7 +15,7 @@ export default function RiveAnimation({ upgradePrice = 24 }: RiveAnimationProps)
 
    const { rive, RiveComponent } = useRive({
       //src: '/animations/9863-18814-fortune-wheel-mini-game.riv',
-      src: '/animations/fortune_wheel-mini_game_audi.riv',
+      src: '/animations/fortune_wheel-mini_game_X3.riv',
       stateMachines: 'Fortune Wheel',
       autoplay: true,
       layout: new Layout({
