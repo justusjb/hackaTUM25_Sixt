@@ -44,7 +44,7 @@ export default function Questions() {
 
    return (
       <motion.div
-         className='px-4 py-6 pb-4 flex flex-col gap-4 h-[calc(100vh-64px)]'
+         className='px-4 py-6 pb-4 flex flex-col gap-4 h-[calc(100vh-128px)]'
          initial={{ opacity: 0, y: 10 }}
          animate={{ opacity: 1, y: 0 }}
          transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -67,7 +67,7 @@ export default function Questions() {
          </div>
 
          {/* Card Stack */}
-         <div className='relative flex-1 mx-2 mb-4'>
+         <div className='relative flex-1 mx-2 mb-4 min-h-0 max-h-[50vh]'>
             <AnimatePresence mode='popLayout'>
                {cards.map((card, index) => {
                   const stackIndex = cards.length - 1 - index;

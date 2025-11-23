@@ -10,8 +10,10 @@ export default function CheckInOffer() {
    const searchParams = useSearchParams();
    const isRefined = searchParams.get('refined') === 'true';
    const bringingGear = searchParams.get('gear') !== 'false';
+   const discount = parseInt(searchParams.get('discount') || '0');
+   const hasDiscount = discount > 0;
 
-   const [showContent, setShowContent] = useState(false);
+   const [showContent, setShowContent] = useState(hasDiscount);
    const [carSelected, setCarSelected] = useState(true);
    const [protectionSelected, setProtectionSelected] = useState(true);
 
@@ -28,9 +30,12 @@ export default function CheckInOffer() {
       ? 'All 3 of you bringing gear? The X3 fits 3 full ski setups – skis, boots, bags. xDrive handles the snow.'
       : "Not everyone bringing gear? The X3's still perfect – xDrive AWD for the pass, tons of space for the crew.";
 
-   const message = isRefined ? refinedMessage : initialMessage;
+   const discountMessage = `Lucky you! Your ${discount}% discount is applied. The X3 awaits – let's lock it in.`;
 
-   const carPrice = isRefined ? 24 : 12;
+   const message = hasDiscount ? discountMessage : (isRefined ? refinedMessage : initialMessage);
+
+   const baseCarPrice = isRefined ? 24 : 12;
+   const carPrice = hasDiscount ? Math.round(baseCarPrice * (1 - discount / 100)) : baseCarPrice;
    const protectionPrice = 15;
 
    const totalPrice =
@@ -46,7 +51,7 @@ export default function CheckInOffer() {
             animate={{ opacity: showContent ? 1 : 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
          >
-            {isRefined ? 'Your Perfect Match' : 'Check In'}
+            {hasDiscount ? 'Your Discounted Upgrade' : (isRefined ? 'Your Perfect Match' : 'Check In')}
          </motion.h1>
 
          {/* Agent Message */}
@@ -127,7 +132,10 @@ export default function CheckInOffer() {
                   <h2 className='text-white text-lg font-bold'>
                      {isRefined ? 'BMW X3 xDrive' : 'VW Passat Variant'}
                   </h2>
-                  <span className='text-[#FF5000] font-bold'>
+                  <span className='text-[#FF5000] font-bold flex items-center gap-2'>
+                     {hasDiscount && (
+                        <span className='text-[#9DA3AF] line-through text-sm'>€{baseCarPrice}</span>
+                     )}
                      +€{carPrice}/day
                   </span>
                </div>
@@ -270,22 +278,26 @@ export default function CheckInOffer() {
                      : 'bg-[#3A3A3A] text-[#9DA3AF]'
                }`}
             >
-               {isRefined
-                  ? hasSelection
-                     ? 'Upgrade'
-                     : 'Select an option'
-                  : 'Upgrade'}
+               {hasDiscount
+                  ? 'Claim Discounted Upgrade'
+                  : isRefined
+                     ? hasSelection
+                        ? 'Upgrade'
+                        : 'Select an option'
+                     : 'Upgrade'}
             </button>
-            <button
-               onClick={() =>
-                  router.push(isRefined ? '/lucky' : '/checkin/questions')
-               }
-               className='w-full bg-[#2B2D33] text-white font-semibold py-4 rounded-2xl active:scale-[0.98] transition-transform'
-            >
-               {isRefined
-                  ? "I'm too broke for this"
-                  : 'Not exactly what I need'}
-            </button>
+            {!hasDiscount && (
+               <button
+                  onClick={() =>
+                     router.push(isRefined ? '/lucky' : '/checkin/questions')
+                  }
+                  className='w-full bg-[#2B2D33] text-white font-semibold py-4 rounded-2xl active:scale-[0.98] transition-transform'
+               >
+                  {isRefined
+                     ? "I'm too broke for this"
+                     : 'Not exactly what I need'}
+               </button>
+            )}
          </motion.div>
       </div>
    );

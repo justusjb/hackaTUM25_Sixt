@@ -11,7 +11,7 @@ export default function Header() {
          {/* Profile */}
          <div className='w-9 h-9 rounded-full overflow-hidden'>
             <Image
-               src='/profile-picture.jpeg'
+               src='/profile-picture.jpg'
                alt='Profile'
                width={36}
                height={36}
