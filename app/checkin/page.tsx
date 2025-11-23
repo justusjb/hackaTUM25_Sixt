@@ -180,9 +180,9 @@ function CheckInOfferContent() {
                   </h2>
                   <span className='text-[#FF5000] font-bold flex items-center gap-2'>
                      {hasDiscount && (
-                        <span className='text-[#9DA3AF] line-through text-sm'>€{baseCarPrice}</span>
+                        <span className='text-[#9DA3AF] line-through text-sm'>${baseCarPrice}</span>
                      )}
-                     +€{carPrice}/day
+                     +${carPrice}/day
                   </span>
                </div>
 
@@ -276,7 +276,7 @@ function CheckInOfferContent() {
 
                {/* Personalized pitch */}
                <p className='text-[#9DA3AF] text-sm'>
-                  Mountain roads are rough. You paid €400 for that Garmisch
+                  Mountain roads are rough. You paid $400 for that Garmisch
                   scratch – this covers tires, windshield, and wet gear damage.
                </p>
 
@@ -312,7 +312,7 @@ function CheckInOfferContent() {
                <div className='flex justify-between items-center px-1'>
                   <span className='text-[#9DA3AF] text-sm'>Total upgrade</span>
                   <span className='text-[#FF5000] font-bold text-lg'>
-                     +€{totalPrice}/day
+                     +${totalPrice}/day
                   </span>
                </div>
             )}
@@ -337,7 +337,7 @@ function CheckInOfferContent() {
             {!hasDiscount && (
                <button
                   onClick={() =>
-                     router.push(isRefined ? '/lucky' : '/checkin/questions')
+                     router.push(isRefined ? `/lucky?upgrade=${totalPrice}` : '/checkin/questions')
                   }
                   className='w-full bg-[#2B2D33] text-white font-semibold py-4 rounded-2xl active:scale-[0.98] transition-transform'
                >

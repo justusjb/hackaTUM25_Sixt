@@ -4,7 +4,11 @@ import { useRive, Fit, Alignment, Layout } from '@rive-app/react-canvas';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function RiveAnimation() {
+interface RiveAnimationProps {
+   upgradePrice?: number;
+}
+
+export default function RiveAnimation({ upgradePrice = 24 }: RiveAnimationProps) {
    const router = useRouter();
    const hitboxCount = useRef(0);
    const hasRedirected = useRef(false);
@@ -40,7 +44,7 @@ export default function RiveAnimation() {
                   rive.pause(); // Freeze the animation
 
                   setTimeout(() => {
-                     router.push('/win');
+                     router.push(`/win?upgrade=${upgradePrice}`);
                   }, 1500);
                }
             }

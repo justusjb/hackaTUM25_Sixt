@@ -1,9 +1,14 @@
 'use client';
 
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { motion } from 'framer-motion';
 
-export default function Win() {
+function WinContent() {
+   const searchParams = useSearchParams();
+   const upgradePrice = parseInt(searchParams.get('upgrade') || '24');
+
    return (
       <motion.div
          className='px-4 py-4 flex flex-col gap-4'
@@ -45,10 +50,18 @@ export default function Win() {
                   BMW X3 xDrive
                </p>
                <p className='text-[#9DA3AF] text-sm mt-1'>
-                  <span className='line-through'>+€24/day</span> → €0
+                  <span className='line-through'>+${upgradePrice}/day</span> → $0
                </p>
             </div>
          </div>
       </motion.div>
+   );
+}
+
+export default function Win() {
+   return (
+      <Suspense fallback={<div className="px-4 py-4">Loading...</div>}>
+         <WinContent />
+      </Suspense>
    );
 }
