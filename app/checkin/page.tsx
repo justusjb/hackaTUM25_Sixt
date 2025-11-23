@@ -68,6 +68,38 @@ function CheckInOfferContent() {
       fetchBookingData();
    }, []);
 
+
+   useEffect(() => {
+        console.log('=== PREFETCH STARTED ===');
+
+       fetch('https://hackatum25sixtbackend-production.up.railway.app/generate-questions', {
+            method: 'POST',
+        })
+            .then(res => {
+                console.log('Prefetch response status:', res.status);
+                console.log('Prefetch response ok:', res.ok);
+                return res.json();
+            })
+            .then(data => {
+                console.log('=== PREFETCH DATA RECEIVED ===');
+                console.log('Full data:', JSON.stringify(data, null, 2));
+                console.log('data.tree:', data.tree);
+                console.log('Tree keys:', Object.keys(data.tree || {}));
+
+                sessionStorage.setItem('decisionTree', JSON.stringify(data.tree));
+                console.log('✅ Saved to sessionStorage');
+                console.log('sessionStorage content:', sessionStorage.getItem('decisionTree'));
+                console.log('===========================');
+            })
+            .catch(err => {
+                console.error('=== PREFETCH ERROR ===');
+                console.error('Error:', err);
+                console.error('Error type:', err.constructor.name);
+                console.error('Error message:', err.message);
+                console.error('=====================');
+            });
+    }, []);
+
    // Messages adapt based on context
    const initialMessage =
       "Sölden this weekend? The Ibiza won't cut it. Here's a Passat with 4Motion – fits 2 full ski setups comfortably.";

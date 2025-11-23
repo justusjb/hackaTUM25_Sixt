@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type QuestionNode = {
@@ -14,29 +14,62 @@ type QuestionNode = {
     no?: string | null;
 };
 
-const decisionTree: Record<string, QuestionNode> = {
-    'snow': { id: 1, key: 'snow', question: 'Expecting snow on the roads?', image: '/snow-on-the-road.jpg', yes: 'alpine', no: 'alpine' },
-    'alpine': { id: 2, key: 'alpine', question: 'Taking the high alpine passes?', image: '/alpine-pass.jpg', yes: 'gear', no: 'gear' },
-    'gear': { id: 3, key: 'gear', question: 'All 3 of you bringing ski gear?', image: '/ski-gear.jpg', yes: null, no: null },
-};
-
-const buildStack = (currentKey: string): QuestionNode[] => {
+const buildStack = (currentKey: string, tree: Record<string, QuestionNode>): QuestionNode[] => {
     const stack: QuestionNode[] = [];
     let key: string | null | undefined = currentKey;
-    while (key && stack.length < 3) {
-        stack.push(decisionTree[key]);
-        key = decisionTree[key].yes; // Preview "yes" path
+    while (key && stack.length < 3 && tree[key]) {
+        stack.push(tree[key]);
+        key = tree[key].yes; // Preview "yes" path
     }
     return stack.reverse();
 };
 
 export default function Questions() {
-   const router = useRouter();
-    const [currentQuestionKey, setCurrentQuestionKey] = useState('snow');
-    const [cards, setCards] = useState(() => buildStack('snow'));
+    const router = useRouter();
+    const [decisionTree, setDecisionTree] = useState<Record<string, QuestionNode>>({});
+    const [currentQuestionKey, setCurrentQuestionKey] = useState('gear');
+    const [cards, setCards] = useState<QuestionNode[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+
    const [answers, setAnswers] = useState<Record<string, boolean>>({});
    const [exitX, setExitX] = useState(0);
    const [isAnimating, setIsAnimating] = useState(false);
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            // Check if tree was prefetched and cached
+            const cachedTree = sessionStorage.getItem('decisionTree');
+
+            if (cachedTree) {
+                const tree = JSON.parse(cachedTree);
+                setDecisionTree(tree);
+                setCards(buildStack('gear', tree));
+                setIsLoading(false);
+                sessionStorage.removeItem('decisionTree'); // Clean up
+                return;
+            }
+
+            // Otherwise fetch from API
+            try {
+                console.log("This should never get called unless prefetch is broken")
+                const response = await fetch('https://hackatum25sixtbackend-production.up.railway.app/generate-questions', {
+                    method: 'POST',
+                });
+
+
+                const data = await response.json();
+                setDecisionTree(data.tree);
+                setCards(buildStack('gear', data.tree));
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+                setIsLoading(false);
+            }
+        };
+
+        fetchQuestions();
+    }, []);
 
     const handleAnswer = (isYes: boolean) => {
         if (isAnimating || cards.length === 0) return;
@@ -60,7 +93,7 @@ export default function Questions() {
                 router.push(`/checkin?${params.toString()}`);
             } else {
                 setCurrentQuestionKey(nextKey);
-                setCards(buildStack(nextKey));
+                setCards(buildStack(nextKey, decisionTree));
             }
             setIsAnimating(false);
         }, 200);
