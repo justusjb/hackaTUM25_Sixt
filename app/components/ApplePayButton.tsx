@@ -3,11 +3,16 @@
 import { useStripe } from '@stripe/react-stripe-js';
 import { PaymentRequest } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
+import RiveAnimation from './RiveAnimation';
+import { useRouter } from 'next/navigation';
+
 
 export default function ApplePayButton() {
     const stripe = useStripe();
+    const router = useRouter();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
     const [message, setMessage] = useState('');
+    const [paymentSuccess, setPaymentSuccess] = useState(false); // Add this state
 
     useEffect(() => {
         if (!stripe) return;
@@ -17,13 +22,12 @@ export default function ApplePayButton() {
             currency: 'eur',
             total: {
                 label: 'Test Purchase',
-                amount: 500, // $10.99 in cents
+                amount: 500,
             },
             requestPayerName: true,
             requestPayerEmail: true,
         });
 
-        // Check if Apple Pay is available
         pr.canMakePayment().then((result) => {
             if (result) {
                 setPaymentRequest(pr);
@@ -33,16 +37,14 @@ export default function ApplePayButton() {
         pr.on('paymentmethod', async (ev) => {
             setMessage('Processing...');
 
-            // Call your backend to create PaymentIntent
             const response = await fetch('/api/create-payment-intent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: 1099 }),
+                body: JSON.stringify({ amount: 500 }),
             });
 
             const { clientSecret } = await response.json();
 
-            // Confirm the payment
             const { error, paymentIntent } = await stripe.confirmCardPayment(
                 clientSecret,
                 { payment_method: ev.paymentMethod.id },
@@ -54,10 +56,24 @@ export default function ApplePayButton() {
                 setMessage(`Payment failed: ${error.message}`);
             } else {
                 ev.complete('success');
-                setMessage('✅ Payment successful! (No charge in test mode)');
+                // setPaymentSuccess(true); // Set success state
+                // setMessage('✅ Payment successful!');
+                router.push('/gambling')
             }
         });
     }, [stripe]);
+
+    // Show animation after successful payment
+    if (paymentSuccess) {
+        return (
+            <div className="flex flex-col items-center gap-4 p-8">
+                <RiveAnimation />
+                <div className="text-center text-lg font-medium text-green-600">
+                    {message}
+                </div>
+            </div>
+        );
+    }
 
     if (!paymentRequest) {
         return <div>Apple Pay not available on this device</div>;
