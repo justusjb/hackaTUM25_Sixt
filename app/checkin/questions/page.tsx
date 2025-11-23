@@ -27,7 +27,7 @@ const buildStack = (currentKey: string, tree: Record<string, QuestionNode>): Que
 export default function Questions() {
     const router = useRouter();
     const [decisionTree, setDecisionTree] = useState<Record<string, QuestionNode>>({});
-    const [currentQuestionKey, setCurrentQuestionKey] = useState('gear');
+    const [currentQuestionKey, setCurrentQuestionKey] = useState('snow');
     const [cards, setCards] = useState<QuestionNode[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -44,7 +44,7 @@ export default function Questions() {
             if (cachedTree) {
                 const tree = JSON.parse(cachedTree);
                 setDecisionTree(tree);
-                setCards(buildStack('gear', tree));
+                setCards(buildStack('snow', tree));
                 setIsLoading(false);
                 sessionStorage.removeItem('decisionTree'); // Clean up
                 return;
@@ -60,7 +60,7 @@ export default function Questions() {
 
                 const data = await response.json();
                 setDecisionTree(data.tree);
-                setCards(buildStack('gear', data.tree));
+                setCards(buildStack('snow', data.tree));
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching questions:', error);
