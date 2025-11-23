@@ -183,6 +183,7 @@ function CheckInOfferContent() {
                         <span className='text-[#9DA3AF] line-through text-sm'>${baseCarPrice}</span>
                      )}
                      +${carPrice}/day
+                     <span className='text-[#9DA3AF] text-sm font-normal'>${carPrice * 3} total</span>
                   </span>
                </div>
 
@@ -245,8 +246,9 @@ function CheckInOfferContent() {
                      )}
                   </div>
                   <div className='flex items-center gap-3'>
-                     <span className='text-[#FF5000] font-bold'>
+                     <span className='text-[#FF5000] font-bold flex items-center gap-2'>
                         +${protectionData?.price || 69}/day
+                        <span className='text-[#9DA3AF] text-sm font-normal'>${(protectionData?.price || 69) * 3} total</span>
                      </span>
                      <div
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
@@ -311,8 +313,9 @@ function CheckInOfferContent() {
             {isRefined && hasSelection && (
                <div className='flex justify-between items-center px-1'>
                   <span className='text-[#9DA3AF] text-sm'>Total upgrade</span>
-                  <span className='text-[#FF5000] font-bold text-lg'>
+                  <span className='text-[#FF5000] font-bold text-lg flex items-center gap-2'>
                      +${totalPrice}/day
+                     <span className='text-[#9DA3AF] text-sm font-normal'>${totalPrice * 3} total</span>
                   </span>
                </div>
             )}
